@@ -20,6 +20,7 @@
 let state = Object.freeze({
     pointerEvent: { x: 0, y: 0 },
     lastPointerEvent: { x: 0, y: 0 },
+    flagAngle: 0,
 });
 
 
@@ -52,6 +53,7 @@ function updateState(newState) {
     state = Object.freeze({ ...newState, lastPointerEvent: lastEvent });
 }
 
+
 /**
  * This is where we put the code that transforms and outputs our data.
  * loop() is run every frame, assuming that we keep calling it with `window.requestAnimationFrame`.
@@ -66,6 +68,7 @@ function loop() {
     flag.element.style.left = `${pointerEvent.x}px`;
     flag.element.style.top = `${pointerEvent.y - verticalOffset}px`;
 
+    rotate(flag);
     window.requestAnimationFrame(loop);
 }
 
@@ -84,7 +87,7 @@ function setup() {
 
     document.addEventListener("pointermove", function (event) {
         updateState({ pointerEvent: event });
-        rotate(flag);
+        // rotate(flag);
     });
 
     loop();
@@ -111,19 +114,11 @@ function rotate(flag) {
     /** Determine whether the curso is moving up, right, down or left.
     * Snipped inspired by code written by Thangaraj on StackOverflow: https://stackoverflow.com/a/57069082
     */
-    if (currentX < lastX && currentY == lastY) {
-        // console.log("Left");
-        flag.element.style.transform = "rotate(0turn)";
-    } else if (currentX > lastX && currentY == lastY) {
-        // console.log("Right");
-        flag.element.style.transform = "rotate(0.5turn)";
-    } else if (currentX == lastX && currentY < lastY) {
-        // console.log("Up");
-        flag.element.style.transform = "rotate(0.25turn)";
-    } else if (currentX == lastX && currentY > lastY) {
-        // console.log("Down");
-        flag.element.style.transform = "rotate(0.75turn)";
-    }
+    const angle = Math.atan2(currentY - lastY, currentX - lastX);
+
+    // Set the appropriate rotation for the flag to make the cursor push the flag in the cursor direction
+    flag.element.style.transform = `rotate(${angle - Math.PI}rad)`;
 
     // console.log(`currentX:${Math.round(currentX)}, lastX:${Math.round(lastX)}`);
 }
+

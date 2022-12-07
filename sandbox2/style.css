@@ -12,10 +12,11 @@ body {
 }
 
 #flag {
-    transition: transform 0.5s;
+    /* transition: transform 0.1s; */
     position: fixed;
     background-color: #006AA7;
     transform-origin: center left;
+    transform: translate(-320px, 0px);
 }
 
 #horizontal-stripe {
@@ -36,3 +37,5 @@ body {
     left: 320px;
     top: -10%;
 } */
+
+
