@@ -20,7 +20,6 @@
 let state = Object.freeze({
     pointerEvent: { x: 0, y: 0 },
     lastPointerEvent: { x: 0, y: 0 },
-    flagAngle: 0,
 });
 
 
@@ -59,7 +58,7 @@ function updateState(newState) {
  * loop() is run every frame, assuming that we keep calling it with `window.requestAnimationFrame`.
  */
 function loop() {
-    const { pointerEvent, lastPointerEvent } = state;
+    const { pointerEvent } = state;
     const { flag } = settings;
 
     const verticalOffset = flag.height / 2;
@@ -68,7 +67,8 @@ function loop() {
     flag.element.style.left = `${pointerEvent.x}px`;
     flag.element.style.top = `${pointerEvent.y - verticalOffset}px`;
 
-    rotate(flag);
+    // rotate(flag);
+
     window.requestAnimationFrame(loop);
 }
 
@@ -87,7 +87,6 @@ function setup() {
 
     document.addEventListener("pointermove", function (event) {
         updateState({ pointerEvent: event });
-        // rotate(flag);
     });
 
     loop();
@@ -112,13 +111,54 @@ function rotate(flag) {
     const { pointerEvent: { x: currentX, y: currentY }, lastPointerEvent: { x: lastX, y: lastY } } = state;
 
     /** Determine whether the curso is moving up, right, down or left.
-    * Snipped inspired by code written by Thangaraj on StackOverflow: https://stackoverflow.com/a/57069082
+    * Snipped inspired by code written by OpherV on StackOverflow: https://stackoverflow.com/questions/15653801/rotating-object-to-face-mouse-pointer-on-mousemove
     */
-    const angle = Math.atan2(currentY - lastY, currentX - lastX);
+
+    const newAngle = Math.atan2(currentY - lastY, currentX - lastX);
 
     // Set the appropriate rotation for the flag to make the cursor push the flag in the cursor direction
-    flag.element.style.transform = `rotate(${angle - Math.PI}rad)`;
+
+    // const lastAngle = flag.element.style.transform;
+    // console.log(lastAngle);
+
+    if (shouldRotate(currentX, lastX, currentY, lastY)) {
+      flag.element.style.transform = `rotate(${newAngle - Math.PI}rad)`;
+    }
+    
+    
 
     // console.log(`currentX:${Math.round(currentX)}, lastX:${Math.round(lastX)}`);
 }
 
+
+setInterval(function() {
+  const { flag } = settings;
+  rotate(flag)
+}, 1);
+
+
+/** Determines wether the two values have enough difference
+ * @param {number} newX
+ * @param {number} oldX
+ * @param {number} newY
+ * @param {number} oldY
+ * @returns {Boolean}
+ */
+function shouldRotate(newX, oldX, newY, oldY, threshold = 2) {
+
+  let a = Math.round(newX); // Rounded new X
+  let b = Math.round(oldX); // Rounded old X
+  let c = Math.round(newY); // Rounded new Y
+  let d = Math.round(oldY); // Rounded old Y
+
+  console.log(`X: ${Math.abs(a - b)}, Y: ${Math.abs(c - d)}`);
+
+  let xDifference = Math.abs( a - b );
+  let yDifference = Math.abs( c - d );
+
+  if ( xDifference < threshold && yDifference < threshold ) {
+    return false;
+  } else {
+    return true;
+  }
+}
