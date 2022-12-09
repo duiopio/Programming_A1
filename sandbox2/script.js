@@ -23,6 +23,34 @@ let state = Object.freeze({
 });
 
 
+/**
+ * https://stackoverflow.com/questions/19618745/css3-rotate-transition-doesnt-take-shortest-way
+ */
+var rot;
+
+function rotateThis(element, newRotation) {
+    var apparentRotation;
+    rot = rot || 0; // if rot undefined or 0, make 0, else rot
+    apparentRotation = rot % 360;
+    if ( apparentRotation < 0 ) { aR += 360; }
+    if ( apparentRotation < 180 && (newRotation > (apparentRotation + 180)) ) { rot -= 360; }
+    if ( apparentRotation >= 180 && (newRotation <= (apparentRotation - 180)) ) { rot += 360; }
+    rot += (newRotation - apparentRotation);
+    element.style.transform = ("rotate( " + rot + "deg )");
+}
+
+// this is how to intialize  and apply 0
+el = document.getElementById("elementYouWantToUse");
+rotateThis(el, 0);
+
+// now call function
+rotateThis(el, 359);
+rotateThis(el, 1);
+
+
+
+
+
 // The settings should contain all of the "fixed" parts of your programs, like static HTMLElements and paramaters.
 const settings = Object.freeze({
     flag: {
@@ -115,19 +143,20 @@ function rotate(flag) {
     */
 
     const newAngle = Math.atan2(currentY - lastY, currentX - lastX);
+    const rotation = newAngle - Math.PI
 
-    // Set the appropriate rotation for the flag to make the cursor push the flag in the cursor direction
-
-    // const lastAngle = flag.element.style.transform;
-    // console.log(lastAngle);
+    /**
+     * We need a way to fool CSS into animating the rotation value in the proper way.
+     */
 
     if (shouldRotate(currentX, lastX, currentY, lastY)) {
+
+      // If we don't subtract PI the cursor will push the flag instead of pulling it.
+      // Subtracting PI will make the flag rotate 180°. This is the only trigonometry I "remember".
       flag.element.style.transform = `rotate(${newAngle - Math.PI}rad)`;
     }
     
     
-
-    // console.log(`currentX:${Math.round(currentX)}, lastX:${Math.round(lastX)}`);
 }
 
 
