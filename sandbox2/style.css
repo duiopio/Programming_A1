@@ -16,7 +16,7 @@ body {
     position: fixed;
     background-color: #006AA7;
     transform-origin: center left;
-    transform: translate(-320px, 0px);
+    transform: translate(-320px, 0px) skewY(45deg);
 }
 
 #horizontal-stripe {

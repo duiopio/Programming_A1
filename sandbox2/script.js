@@ -4,17 +4,17 @@
  * Programming 2022, Interaction Design Bacherlor, Malmö University
  * 
  * This assignment is written by:
- * Name Surname
- * Name Surname
+ * Filippo De Togni
+ * David Palmberg
  * 
  * 
  * The template contains some sample code exemplifying the template code structure.
  * You can build on top of it, or remove the example values etc.
  * 
  * For instructions, see the Canvas assignment: https://mau.instructure.com/courses/11936/assignments/84965
- * For guidence on how to use the template, see the demo video:
- *
+ * For guidence on how to use the template, see the demo video: 
  */
+
 
 // The state should contain all the "moving" parts of your program, values that change.
 let state = Object.freeze({
@@ -23,32 +23,20 @@ let state = Object.freeze({
 });
 
 
-/**
+/** This seems like a good way to fix the rotation: 
  * https://stackoverflow.com/questions/19618745/css3-rotate-transition-doesnt-take-shortest-way
  */
-var rot;
-
-function rotateThis(element, newRotation) {
-    var apparentRotation;
+let rot;
+function rotateThis(newRotation) {
+    let apparentRotation;
     rot = rot || 0; // if rot undefined or 0, make 0, else rot
     apparentRotation = rot % 360;
-    if ( apparentRotation < 0 ) { aR += 360; }
+    if ( apparentRotation < 0 ) { apparentRotation += 360; }
     if ( apparentRotation < 180 && (newRotation > (apparentRotation + 180)) ) { rot -= 360; }
     if ( apparentRotation >= 180 && (newRotation <= (apparentRotation - 180)) ) { rot += 360; }
     rot += (newRotation - apparentRotation);
-    element.style.transform = ("rotate( " + rot + "deg )");
+    return rot
 }
-
-// this is how to intialize  and apply 0
-el = document.getElementById("elementYouWantToUse");
-rotateThis(el, 0);
-
-// now call function
-rotateThis(el, 359);
-rotateThis(el, 1);
-
-
-
 
 
 // The settings should contain all of the "fixed" parts of your programs, like static HTMLElements and paramaters.
@@ -95,8 +83,6 @@ function loop() {
     flag.element.style.left = `${pointerEvent.x}px`;
     flag.element.style.top = `${pointerEvent.y - verticalOffset}px`;
 
-    // rotate(flag);
-
     window.requestAnimationFrame(loop);
 }
 
@@ -138,49 +124,43 @@ function rotate(flag) {
     */
     const { pointerEvent: { x: currentX, y: currentY }, lastPointerEvent: { x: lastX, y: lastY } } = state;
 
-    /** Determine whether the curso is moving up, right, down or left.
-    * Snipped inspired by code written by OpherV on StackOverflow: https://stackoverflow.com/questions/15653801/rotating-object-to-face-mouse-pointer-on-mousemove
-    */
-
+    /** Rotate flag following the cursor direction
+    * Snipped inspired by code written by OpherV on StackOverflow:
+    * https://stackoverflow.com/questions/15653801/rotating-object-to-face-mouse-pointer-on-mousemove */
     const newAngle = Math.atan2(currentY - lastY, currentX - lastX);
     const rotation = newAngle - Math.PI
-
-    /**
-     * We need a way to fool CSS into animating the rotation value in the proper way.
-     */
+    const degRotation = degreesFromRadians(rotation);
+    const adjustedRotation = rotateThis(degRotation);
 
     if (shouldRotate(currentX, lastX, currentY, lastY)) {
-
-      // If we don't subtract PI the cursor will push the flag instead of pulling it.
-      // Subtracting PI will make the flag rotate 180°. This is the only trigonometry I "remember".
-      flag.element.style.transform = `rotate(${newAngle - Math.PI}rad)`;
+      flag.element.style.transform = `rotate(${adjustedRotation}deg)`;
     }
-    
-    
 }
 
 
+/**
+ * We need this otherwise the rotation happens too often and it jitters.
+ */
 setInterval(function() {
   const { flag } = settings;
-  rotate(flag)
-}, 1);
+  const random = Math.floor(Math.random());
+  rotate(flag);
+}, 10);
 
 
-/** Determines wether the two values have enough difference
+/** Determines wether the coordinates are different enough to perform a rotation
  * @param {number} newX
  * @param {number} oldX
  * @param {number} newY
  * @param {number} oldY
  * @returns {Boolean}
  */
-function shouldRotate(newX, oldX, newY, oldY, threshold = 2) {
+function shouldRotate(newX, oldX, newY, oldY, threshold = 10) {
 
   let a = Math.round(newX); // Rounded new X
   let b = Math.round(oldX); // Rounded old X
   let c = Math.round(newY); // Rounded new Y
   let d = Math.round(oldY); // Rounded old Y
-
-  console.log(`X: ${Math.abs(a - b)}, Y: ${Math.abs(c - d)}`);
 
   let xDifference = Math.abs( a - b );
   let yDifference = Math.abs( c - d );
@@ -190,4 +170,20 @@ function shouldRotate(newX, oldX, newY, oldY, threshold = 2) {
   } else {
     return true;
   }
+}
+
+
+/** Converts the radians to degrees.
+ * Thanks to https://www.w3resource.com/javascript-exercises/javascript-math-exercise-34.php
+ * 
+ * @param {number} radians 
+ * @returns {number}
+ */
+function degreesFromRadians(radians) {
+  return radians * ( 180 / Math.PI);
+}
+
+function flapFlag(lag) {
+  const { flag } = settings;
+  
 }
