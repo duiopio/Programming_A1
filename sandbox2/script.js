@@ -20,8 +20,10 @@
 let state = Object.freeze({
     pointerEvent: { x: 0, y: 0 },
     lastPointerEvent: { x: 0, y: 0 },
+    lastTime: 0,
 });
 
+let flapping = false;
 
 /** This seems like a good way to fix the rotation: 
  * https://stackoverflow.com/questions/19618745/css3-rotate-transition-doesnt-take-shortest-way
@@ -52,6 +54,7 @@ const settings = Object.freeze({
             },
         },
     },
+    threshold: 100, 
 });
 
 
@@ -83,6 +86,8 @@ function loop() {
     flag.element.style.left = `${pointerEvent.x}px`;
     flag.element.style.top = `${pointerEvent.y - verticalOffset}px`;
 
+    rotate(flag);
+
     window.requestAnimationFrame(loop);
 }
 
@@ -100,7 +105,8 @@ function setup() {
     const stripeOffset = (flag.height / 2) - (stripe.height / 2);
 
     document.addEventListener("pointermove", function (event) {
-        updateState({ pointerEvent: event });
+      // console.log(Date.now());
+      updateState({ pointerEvent: event, lastTime: Date.now() });
     });
 
     loop();
@@ -108,7 +114,6 @@ function setup() {
 
 
 setup(); // Always remember to call setup()!
-
 
 /**
  * @param {Object} flag
@@ -122,7 +127,8 @@ function rotate(flag) {
     *    lastPointerEvent ┬─> x —> lastX
     *                     └─> y —> lastY
     */
-    const { pointerEvent: { x: currentX, y: currentY }, lastPointerEvent: { x: lastX, y: lastY } } = state;
+    const { pointerEvent: { x: currentX, y: currentY }, lastPointerEvent: { x: lastX, y: lastY }, lastTime } = state;
+    const { threshold } = settings;
 
     /** Rotate flag following the cursor direction
     * Snipped inspired by code written by OpherV on StackOverflow:
@@ -132,20 +138,28 @@ function rotate(flag) {
     const degRotation = degreesFromRadians(rotation);
     const adjustedRotation = rotateThis(degRotation);
 
-    if (shouldRotate(currentX, lastX, currentY, lastY)) {
+
+    // flapping();
+    const random = Math.floor(Math.random() * 15) -7.5;
+    console.log(Date.now() - lastTime);
+
+    
+    if (Date.now() - threshold < lastTime) {
+      flag.element.style.transform = `rotate(${adjustedRotation}deg) skewY(${random}deg)`;
+    } else {
       flag.element.style.transform = `rotate(${adjustedRotation}deg)`;
     }
+      
+    
 }
-
 
 /**
  * We need this otherwise the rotation happens too often and it jitters.
  */
-setInterval(function() {
-  const { flag } = settings;
-  const random = Math.floor(Math.random());
-  rotate(flag);
-}, 10);
+// setInterval(function() {
+//   const { flag } = settings;
+
+// }, 10);
 
 
 /** Determines wether the coordinates are different enough to perform a rotation
@@ -155,35 +169,51 @@ setInterval(function() {
  * @param {number} oldY
  * @returns {Boolean}
  */
-function shouldRotate(newX, oldX, newY, oldY, threshold = 10) {
+function shouldAnimate() {
 
-  let a = Math.round(newX); // Rounded new X
-  let b = Math.round(oldX); // Rounded old X
-  let c = Math.round(newY); // Rounded new Y
-  let d = Math.round(oldY); // Rounded old Y
+  const { pointerEvent: { x: currentX, y: currentY }, lastPointerEvent: { x: lastX, y: lastY } } = state;
+
+  let a = currentX; // Rounded new X
+  let b = lastX; // Rounded old X
+  let c = currentY; // Rounded new Y
+  let d = lastY; // Rounded old Y
 
   let xDifference = Math.abs( a - b );
   let yDifference = Math.abs( c - d );
 
-  if ( xDifference < threshold && yDifference < threshold ) {
-    return false;
+  if (xDifference == 0 || yDifference == 0) {
+    flapping = false;
   } else {
-    return true;
+    flapping = true;
   }
+  
+  console.log(flapping);
+  console.log(xDifference + yDifference);
 }
 
 
 /** Converts the radians to degrees.
  * Thanks to https://www.w3resource.com/javascript-exercises/javascript-math-exercise-34.php
  * 
- * @param {number} radians 
+ * @param {number} radians
  * @returns {number}
  */
 function degreesFromRadians(radians) {
   return radians * ( 180 / Math.PI);
 }
 
-function flapFlag(lag) {
-  const { flag } = settings;
-  
-}
+
+// function flapping() {
+//   if (shouldAnimate(0)) {
+//     console.log("Flapping");
+//     flapping = true;
+//   } else {
+//     flapping = false;
+//     console.log("Flapping");
+//   }
+// }
+
+// setInterval(() => {
+
+//   shouldAnimate();
+// }, 10);
