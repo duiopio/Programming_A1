@@ -54,6 +54,7 @@ const settings = Object.freeze({
             },
         },
     },
+    flappingElement: document.querySelector("#flapping"),
     threshold: 100, 
 });
 
@@ -96,9 +97,11 @@ function loop() {
  * Setup is run once, at the start of the program. It sets everything up for us!
  */
 function setup() {
-    const { flag } = settings;
+    const { flag, flappingElement } = settings;
     flag.element.style.height = `${flag.height}px`;
     flag.element.style.width = `${flag.width}px`;
+    flappingElement.style.height = `${flag.height}px`;
+    flappingElement.style.width = `${flag.width}px`;
     flag.element.style.margin = `0px`;
 
     const stripe = flag.stripes.horizontal;
@@ -128,7 +131,7 @@ function rotate(flag) {
     *                     └─> y —> lastY
     */
     const { pointerEvent: { x: currentX, y: currentY }, lastPointerEvent: { x: lastX, y: lastY }, lastTime } = state;
-    const { threshold } = settings;
+    const { threshold, flappingElement } = settings;
 
     /** Rotate flag following the cursor direction
     * Snipped inspired by code written by OpherV on StackOverflow:
@@ -140,15 +143,17 @@ function rotate(flag) {
 
 
     // flapping();
-    const random = Math.floor(Math.random() * 15) -7.5;
+    // const random = Math.floor(Math.random() * 60) -30;
     console.log(Date.now() - lastTime);
 
     
-    if (Date.now() - threshold < lastTime) {
-      flag.element.style.transform = `rotate(${adjustedRotation}deg) skewY(${random}deg)`;
-    } else {
+    // if (Date.now() - threshold < lastTime) {
       flag.element.style.transform = `rotate(${adjustedRotation}deg)`;
-    }
+      // flappingElement.style.transform = ` skewY(${random}deg)`;
+    // } else {
+      // flag.element.style.transform = `rotate(${adjustedRotation}deg)`;
+      // flappingElement.style.transform = `skewY(0deg)`;
+    // }
       
     
 }
@@ -156,10 +161,16 @@ function rotate(flag) {
 /**
  * We need this otherwise the rotation happens too often and it jitters.
  */
-// setInterval(function() {
-//   const { flag } = settings;
-
-// }, 10);
+setInterval(function() {
+  const random = Math.floor(Math.random() * 15) -7.5;
+  const { lastTime } = state;
+  const { flappingElement, threshold } = settings;
+  if (Date.now() - threshold < lastTime) {
+    flappingElement.style.transform = ` skewY(${random}deg)`;
+  } else {
+    flappingElement.style.transform = ` skewY(0deg)`;
+  }
+}, 50);
 
 
 /** Determines wether the coordinates are different enough to perform a rotation

@@ -12,11 +12,15 @@ body {
 }
 
 #flag {
-    /* transition: transform 0.1s; */
-    position: fixed;
+  position: fixed;
+  transform-origin: center left;
+}
+
+#flapping {
+    transition: transform 0.1s;
     background-color: #006AA7;
     transform-origin: center left;
-    transform: translate(-320px, 0px) skewY(45deg);
+    transform: skewY(0deg);
 }
 
 #horizontal-stripe {
