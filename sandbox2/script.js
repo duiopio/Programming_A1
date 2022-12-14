@@ -44,13 +44,13 @@ function rotateThis(newRotation) {
 // The settings should contain all of the "fixed" parts of your programs, like static HTMLElements and paramaters.
 const settings = Object.freeze({
     flag: {
-        height: 200,
+        height: 300,
         width: 320,
         element: document.querySelector("#flag"),
-        stripes: {
-            horizontal: {
+        squares: {
+            red: {
                 height: 50,
-                element: document.querySelector("horizontal-stripe"),
+                element: document.querySelector("red"),
             },
         },
     },
@@ -104,7 +104,7 @@ function setup() {
     flappingElement.style.width = `${flag.width}px`;
     flag.element.style.margin = `0px`;
 
-    const stripe = flag.stripes.horizontal;
+    const stripe = flag.squares.red;
     const stripeOffset = (flag.height / 2) - (stripe.height / 2);
 
     document.addEventListener("pointermove", function (event) {

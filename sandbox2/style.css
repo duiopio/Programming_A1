@@ -3,6 +3,12 @@
     box-sizing: border-box;
 }
 
+:root {
+  --margin: 20px;
+  --height: 300px;
+  --width: 320;
+}
+
 /* Remove the margin in all browsers */
 body {
     margin: 0;
@@ -18,17 +24,49 @@ body {
 
 #flapping {
     transition: transform 0.1s;
-    background-color: #006AA7;
+    background-color: black;
     transform-origin: center left;
     transform: skewY(0deg);
 }
 
-#horizontal-stripe {
+#red {
+    margin: var(--margin);
     position: absolute;
-    top: 80px;
-    height: 40px;
-    width: 320px;
-    background-color: #FECC02;
+    top: 0px;
+    left: 0px;
+    height: 40%;
+    width: 40%;
+    background-color: #FF4725;
+  }
+
+#blue {
+  margin: var(--margin);
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  height: 40%;
+  width: 40%;
+  background-color: #46B5ED;
+}
+
+#green {
+  margin: var(--margin);
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 40%;
+  width: 40%;
+  background-color: #97D240;
+}
+
+#yellow {
+  margin: var(--margin);
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  height: 40%;
+  width: 40%;
+  background-color: #FFD600;
 }
 
 /* #top-wave-one {
