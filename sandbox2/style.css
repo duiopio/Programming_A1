@@ -11,6 +11,7 @@
 
 /* Remove the margin in all browsers */
 body {
+  background-image: url("https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fi.imgur.com%2FhKOGoex.jpg&f=1&nofb=1&ipt=8a7e372999e6d123775c6e2d48f362489c9c90541a8163ee23d91e1af03ca1a9&ipo=images");
     margin: 0;
     padding: 0;
     line-height: inherit;
@@ -20,6 +21,7 @@ body {
 #flag {
   position: fixed;
   transform-origin: center left;
+  /* display: flex; */
 }
 
 #flapping {
@@ -36,7 +38,7 @@ body {
     left: 0px;
     height: 40%;
     width: 40%;
-    background-color: #FF4725;
+    background-color: #FFD600;
   }
 
 #blue {
@@ -46,7 +48,7 @@ body {
   left: 0px;
   height: 40%;
   width: 40%;
-  background-color: #46B5ED;
+  background-color: #97D240;
 }
 
 #green {
@@ -56,7 +58,7 @@ body {
   right: 0px;
   height: 40%;
   width: 40%;
-  background-color: #97D240;
+  background-color: #46B5ED;
 }
 
 #yellow {
@@ -66,7 +68,7 @@ body {
   right: 0px;
   height: 40%;
   width: 40%;
-  background-color: #FFD600;
+  background-color: #FF4725;
 }
 
 /* #top-wave-one {
@@ -81,3 +83,7 @@ body {
 } */
 
 
+#tail {
+  position: absolute;
+  transform: translate(335px);
+}

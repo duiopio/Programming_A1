@@ -108,7 +108,7 @@ function setup() {
     const stripeOffset = (flag.height / 2) - (stripe.height / 2);
 
     document.addEventListener("pointermove", function (event) {
-      // console.log(Date.now());
+
       updateState({ pointerEvent: event, lastTime: Date.now() });
     });
 
@@ -144,7 +144,7 @@ function rotate(flag) {
 
     // flapping();
     // const random = Math.floor(Math.random() * 60) -30;
-    console.log(Date.now() - lastTime);
+
 
     
     // if (Date.now() - threshold < lastTime) {
@@ -197,9 +197,7 @@ function shouldAnimate() {
   } else {
     flapping = true;
   }
-  
-  console.log(flapping);
-  console.log(xDifference + yDifference);
+
 }
 
 
@@ -212,19 +210,3 @@ function shouldAnimate() {
 function degreesFromRadians(radians) {
   return radians * ( 180 / Math.PI);
 }
-
-
-// function flapping() {
-//   if (shouldAnimate(0)) {
-//     console.log("Flapping");
-//     flapping = true;
-//   } else {
-//     flapping = false;
-//     console.log("Flapping");
-//   }
-// }
-
-// setInterval(() => {
-
-//   shouldAnimate();
-// }, 10);
